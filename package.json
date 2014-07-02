@@ -17,9 +17,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/rideamigoscorp/mongoose-geojson-schema.git"
+    "url": "https://github.com/09SethT/mongoose-geojson-schema.git"
   },
-  "author": "Ben Dalton (ben@rideamigos.com)",
+  "author": "Seth Tolle",
   "license": "MIT",
   "devDependencies": {
     "mongoose": "~3.8.12",
