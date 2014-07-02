@@ -15,10 +15,16 @@
     "geometry",
     "feature"
   ],
-   "repository": {
+  "repository": {
     "type": "git",
     "url": "https://github.com/rideamigoscorp/mongoose-geojson-schema.git"
   },
   "author": "Ben Dalton (ben@rideamigos.com)",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "mongoose": "~3.8.12",
+    "chai": "~1.9.1",
+    "sinon": "~1.10.2",
+    "mockgoose": "~1.10.0"
+  }
 }
