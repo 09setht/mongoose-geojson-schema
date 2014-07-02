@@ -8,4 +8,4 @@
  *        * Created by Seth Tolle on 7/2/2014
  *          */
 
-module.exports = require('./lib/index').register;
+module.exports = require('./lib/index');
