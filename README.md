@@ -1,20 +1,30 @@
 # mongoose-geojson-schema
 
 ## About
-Schema definitions for GeoJSON types for use with Mongoose JS
+Mongoose JS SchemaTypes for GeoJSON
 
 ## Usage
 
 ```
-var GeoJSON = require('mongoose-geojson-schema');
 var mongoose = require('mongoose');
+require('mongoose-geojson-schema')(mongoose);
 
 var schema = new mongoose.Schema({
-	geoFeature:GeoJSON.Feature
+	Point:mongoose.SchemaTypes.GeoJSONPoint,
+	Geo:mongoose.SchemaTypes.GeoJSON,
+	PointReq: {type:mongoose.SchemaTypes.GeoJSONPoint, required: true}
 });
 ```
 
+## Supported Types
+
+Point
+MultiPoint
+LineString
+MultiLineString
+Polygon
+MultiPolygon
+
 ## License
-Copyright (c) 2014, RideAmigos. (MIT License)
 
 See LICENSE for more info.

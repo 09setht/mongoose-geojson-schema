@@ -49,20 +49,20 @@ describe('geojson-schema', function () {
 //			point.register(mongoose);
 
 			testSchema = new Schema({
-				Point: mongoose.SchemaTypes.GeoJSONPointCoordinates,
-				MultiPoint: mongoose.SchemaTypes.GeoJSONMultiPointCoordinates,
-				LineString: mongoose.SchemaTypes.GeoJSONLineStringCoordinates,
-				MultiLineString: mongoose.SchemaTypes.GeoJSONMultiLineStringCoordinates,
-				Polygon: mongoose.SchemaTypes.GeoJSONPolygonCoordinates,
-				MultiPolygon: mongoose.SchemaTypes.GeoJSONMultiPolygonCoordinates,
-				GeoJSON: mongoose.SchemaTypes.GeoJSONCoordinates,
-				PointR: {type:mongoose.SchemaTypes.GeoJSONPointCoordinates,required:true},
-				MultiPointR: {type:mongoose.SchemaTypes.GeoJSONMultiPointCoordinates,required:true},
-				LineStringR: {type:mongoose.SchemaTypes.GeoJSONLineStringCoordinates,required:true},
-				MultiLineStringR: {type:mongoose.SchemaTypes.GeoJSONMultiLineStringCoordinates,required:true},
-				PolygonR: {type:mongoose.SchemaTypes.GeoJSONPolygonCoordinates,required:true},
-				MultiPolygonR: {type:mongoose.SchemaTypes.GeoJSONMultiPolygonCoordinates,required:true},
-				GeoJSONR: {type:mongoose.SchemaTypes.GeoJSONCoordinates,required:true}
+				Point: mongoose.SchemaTypes.GeoJSONPoint,
+				MultiPoint: mongoose.SchemaTypes.GeoJSONMultiPoint,
+				LineString: mongoose.SchemaTypes.GeoJSONLineString,
+				MultiLineString: mongoose.SchemaTypes.GeoJSONMultiLineString,
+				Polygon: mongoose.SchemaTypes.GeoJSONPolygon,
+				MultiPolygon: mongoose.SchemaTypes.GeoJSONMultiPolygon,
+				GeoJSON: mongoose.SchemaTypes.GeoJSON,
+				PointR: {type:mongoose.SchemaTypes.GeoJSONPoint,required:true},
+				MultiPointR: {type:mongoose.SchemaTypes.GeoJSONMultiPoint,required:true},
+				LineStringR: {type:mongoose.SchemaTypes.GeoJSONLineString,required:true},
+				MultiLineStringR: {type:mongoose.SchemaTypes.GeoJSONMultiLineString,required:true},
+				PolygonR: {type:mongoose.SchemaTypes.GeoJSONPolygon,required:true},
+				MultiPolygonR: {type:mongoose.SchemaTypes.GeoJSONMultiPolygon,required:true},
+				GeoJSONR: {type:mongoose.SchemaTypes.GeoJSON,required:true}
 			});
 
 			TestModel = mongoose.model('TestModel', testSchema);
