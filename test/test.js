@@ -45,15 +45,17 @@ describe('geojson-schema', function () {
 		before(function () {
 			exports = require('../lib');
 			exports.register(mongoose);
+			var point = require('../lib/schemas/point');
+			point.register(mongoose);
 
 			testSchema = new Schema({
-				Point: [exports.Point],
-				MultiPoint: [exports.MultiPoint],
-				LineString: [exports.LineString],
-				MultiLineString: [exports.MultiLineString],
-				Polygon: [exports.Polygon],
-				MultiPolygon: [exports.MultiPolygon],
-				GeoJSON: [exports.GeoJSON]
+				Point: point.GeoJSONPoint,
+				MultiPoint: point.GeoJSONMultiPoint,
+				LineString: point.GeoJSONLineString,
+				MultiLineString: point.GeoJSONMultiLineString,
+				Polygon: point.GeoJSONPolygon,
+				MultiPolygon: point.GeoJSONMultiPolygon,
+				GeoJSON: point.GeoJSON
 			});
 
 			TestModel = mongoose.model('TestModel', testSchema);
@@ -67,7 +69,7 @@ describe('geojson-schema', function () {
 			testObject = new TestModel(opts);
 			testObject.save(function (err) {
 				if (!!expectErr !== !!err) {
-					done(expectErr || 'Expected Error');
+					done(err || new Error('Expected Error'));
 				}
 				else {
 					done();
@@ -85,22 +87,48 @@ describe('geojson-schema', function () {
 
 				beforeEach(function () {
 					testVal = {
-						type: schemaName,
-						coordinates: []
+						Point: {
+							type: 'Point',
+							coordinates: [1, 2, 3]
+						},
+						MultiPoint: {
+							type: 'MultiPoint',
+							coordinates: []
+						},
+						LineString: {
+							type: 'LineString',
+							coordinates: null
+						},
+						MultiLineString: {
+							type: 'MultiLineString',
+							coordinates: []
+						},
+						Polygon: {
+							type: 'Polygon',
+							coordinates: undefined
+						},
+						MultiPolygon: {
+							type: 'MultiPolygon',
+							coordinates: []
+						},
+						GeoJSON: {
+							type: 'MultiPoint',
+							coordinates: []
+						}
 					};
-					opts = {};
-					opts[schemaName] = [
-						testVal
-					];
+					opts[schemaName] = testVal[schemaName];
 				});
 
-				it('sends error if type is not schemaName', function (done) {
-					testVal.type = 'OtherVal';
+				it('sends error if type is not ' + schemaName, function (done) {
+					testVal[schemaName].type = 'OtherVal';
 					test(done, true);
 				});
 				it('sends error if coordinates are not valid', function (done) {
-					testVal.coordinates = 'invalid';
+					testVal[schemaName].coordinates = 'invalid';
 					test(done, true);
+				});
+				it('sends no error if valid', function (done) {
+					test(done, false);
 				});
 			});
 		});
@@ -113,9 +141,7 @@ describe('geojson-schema', function () {
 					coordinates: []
 				};
 				opts = {
-					GeoJSON: [
-						testVal
-					]
+					GeoJSON: testVal
 				};
 			});
 
@@ -133,11 +159,22 @@ describe('geojson-schema', function () {
 					chai.assert.ok(typeValidators[GeoJSONType]);
 					chai.assert.isFunction(typeValidators[GeoJSONType].validate);
 					sinon.stub(typeValidators[GeoJSONType], 'validate').returns(true);
-					test(function () {
+					test(function (err) {
 						sinon.assert.called(typeValidators[GeoJSONType].validate);
 						typeValidators[GeoJSONType].validate.restore();
-						done();
+						done(err);
 					}, false);
+				});
+				it('returns an Error when the ' + GeoJSONType + ' validator returns false', function (done) {
+					testVal.type = GeoJSONType;
+					chai.assert.ok(typeValidators[GeoJSONType]);
+					chai.assert.isFunction(typeValidators[GeoJSONType].validate);
+					sinon.stub(typeValidators[GeoJSONType], 'validate').returns(false);
+					test(function (err) {
+						sinon.assert.called(typeValidators[GeoJSONType].validate);
+						typeValidators[GeoJSONType].validate.restore();
+						done(err);
+					}, true);
 				});
 			});
 		});
