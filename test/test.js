@@ -43,26 +43,62 @@ describe('geojson-schema', function () {
 		var opts;
 
 		before(function () {
-			exports = require('../lib');
-			exports.register(mongoose);
-			var point = require('../lib/schemas/point');
-			point.register(mongoose);
+			exports = require('../GeoJSON');
+			exports(mongoose);
+//			var point = require('../lib/schemas/point');
+//			point.register(mongoose);
 
 			testSchema = new Schema({
-				Point: point.GeoJSONPoint,
-				MultiPoint: point.GeoJSONMultiPoint,
-				LineString: point.GeoJSONLineString,
-				MultiLineString: point.GeoJSONMultiLineString,
-				Polygon: point.GeoJSONPolygon,
-				MultiPolygon: point.GeoJSONMultiPolygon,
-				GeoJSON: point.GeoJSON
+				Point: mongoose.SchemaTypes.GeoJSONPointCoordinates,
+				MultiPoint: mongoose.SchemaTypes.GeoJSONMultiPointCoordinates,
+				LineString: mongoose.SchemaTypes.GeoJSONLineStringCoordinates,
+				MultiLineString: mongoose.SchemaTypes.GeoJSONMultiLineStringCoordinates,
+				Polygon: mongoose.SchemaTypes.GeoJSONPolygonCoordinates,
+				MultiPolygon: mongoose.SchemaTypes.GeoJSONMultiPolygonCoordinates,
+				GeoJSON: mongoose.SchemaTypes.GeoJSONCoordinates,
+				PointR: {type:mongoose.SchemaTypes.GeoJSONPointCoordinates,required:true},
+				MultiPointR: {type:mongoose.SchemaTypes.GeoJSONMultiPointCoordinates,required:true},
+				LineStringR: {type:mongoose.SchemaTypes.GeoJSONLineStringCoordinates,required:true},
+				MultiLineStringR: {type:mongoose.SchemaTypes.GeoJSONMultiLineStringCoordinates,required:true},
+				PolygonR: {type:mongoose.SchemaTypes.GeoJSONPolygonCoordinates,required:true},
+				MultiPolygonR: {type:mongoose.SchemaTypes.GeoJSONMultiPolygonCoordinates,required:true},
+				GeoJSONR: {type:mongoose.SchemaTypes.GeoJSONCoordinates,required:true}
 			});
 
 			TestModel = mongoose.model('TestModel', testSchema);
 		});
 
 		beforeEach(function () {
-			opts = {};
+			opts = {
+				PointR: {
+					type: 'Point',
+					coordinates: [1, 2, 3]
+				},
+				MultiPointR: {
+					type: 'MultiPoint',
+					coordinates: []
+				},
+				LineStringR: {
+					type: 'LineString',
+					coordinates: [[1,2],[2,3]]
+				},
+				MultiLineStringR: {
+					type: 'MultiLineString',
+					coordinates: []
+				},
+				PolygonR: {
+					type: 'Polygon',
+					coordinates: []
+				},
+				MultiPolygonR: {
+					type: 'MultiPolygon',
+					coordinates: []
+				},
+				GeoJSONR: {
+					type: 'MultiPoint',
+					coordinates: []
+				}
+			};
 		});
 
 		function test (done, expectErr) {
@@ -76,10 +112,6 @@ describe('geojson-schema', function () {
 				}
 			});
 		}
-
-		it('has properties Point, MultiPoint, LineString, MultiLineString, Polygon, and MultiPolygon', function () {
-			chai.assert.includeMembers(Object.keys(exports), schemaNames);
-		});
 
 		schemaNames.forEach(function (schemaName) {
 			describe(schemaName, function () {
@@ -97,7 +129,7 @@ describe('geojson-schema', function () {
 						},
 						LineString: {
 							type: 'LineString',
-							coordinates: null
+							coordinates: [[1,2],[2,3]]
 						},
 						MultiLineString: {
 							type: 'MultiLineString',
@@ -105,7 +137,7 @@ describe('geojson-schema', function () {
 						},
 						Polygon: {
 							type: 'Polygon',
-							coordinates: undefined
+							coordinates: []
 						},
 						MultiPolygon: {
 							type: 'MultiPolygon',
@@ -130,6 +162,14 @@ describe('geojson-schema', function () {
 				it('sends no error if valid', function (done) {
 					test(done, false);
 				});
+				it('sends no error if not required and not set', function (done) {
+					opts[schemaName] = null;
+					test(done, false);
+				});
+				it('sends error if required and not set', function (done) {
+					opts[schemaName+'R'] = null;
+					test(done, true);
+				});
 			});
 		});
 
@@ -140,9 +180,7 @@ describe('geojson-schema', function () {
 				testVal = {
 					coordinates: []
 				};
-				opts = {
-					GeoJSON: testVal
-				};
+				opts.GeoJSON = testVal;
 			});
 
 			it('sends error if type is not in schemaNames', function (done) {
